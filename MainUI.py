@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import BOTH, StringVar
 from tkinter.ttk import Frame, Button, Style, Label, Entry, Radiobutton, Separator
 
+import MergeBl
+
 
 class MainUI(Frame):
 
@@ -27,7 +29,7 @@ class MainUI(Frame):
         # 1行目
         lbl_enc_path = Label(self, text="エンコーダーログ >>", anchor="e")
         txt_enc_path = Entry(self)
-        btn_enc_path = Button(self, text="参　照")
+        btn_enc_path = Button(self, text="参　照", command=MergeBl.open_dir())
 
         # 2行目
         lbl_lidar_path = Label(self, text="レーザーログ >>", anchor="e")
@@ -99,15 +101,6 @@ def main():
 
     # main window run
     app.mainloop()
-
-# # label
-# lbl_enc_path = tkinter.Label(text='エンコーダーログ　>>')
-# lbl_enc_path.place(x=20, y=20)
-# lbl_enc_path.pack()
-#
-# # entry
-# txt_enc_path = tkinter.Entry(width=80)
-# txt_enc_path.pack()
 
 
 if __name__ == '__main__':
