@@ -60,7 +60,7 @@ class MainUI(Frame):
         self.lbl_offset = Label(self, text="オフセット >>", anchor="e")
         self.txt_offset = Entry(self, justify="right")
         self.lbl_offset_unit = Label(self, text="cm")
-        self.btn_sep = tk.Button(self, text="結　合", fg="#000", bg="#fff8d6")
+        self.btn_sep = tk.Button(self, text="分　割", fg="#000", bg="#fff8d6")
 
         # 7行目
         self.btn_quit = tk.Button(self, text="閉じる", command=self.quit)
