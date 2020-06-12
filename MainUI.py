@@ -102,16 +102,23 @@ class MainUI(Frame):
 
 # event callback function
 
-    # open file dialog and select file
     def open_dir(self, key):
 
+        # open file dialog and select file
         file_type = [("", "*")]
         base_dir = 'C:\\'
+
+        if (self.txt_enc_path.get() != '') or (self.txt_lidar_path.get() != ''):
+            if self.txt_enc_path.get() != '':
+                base_dir = os.path.dirname(self.txt_enc_path.get())
+            else:
+                base_dir = os.path.dirname(self.txt_lidar_path.get())
+
         file_path = filedialog.askopenfilename(filetypes=file_type, initialdir=base_dir)
         target_dir = os.path.dirname(file_path)
-        print(base_dir)
         print(file_path)
 
+        # set file path into Entry
         if key == 'enc':
             txt_path = self.txt_enc_path.get()
             self.txt_enc_path.delete(0, tk.END)
