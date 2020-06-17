@@ -7,6 +7,7 @@ from tkinter import BOTH, StringVar, filedialog
 from tkinter.ttk import Frame, Button, Style, Label, Entry, Radiobutton, Separator
 
 import MergeBl
+import SeparateBl
 
 
 class MainUI(Frame):
@@ -14,7 +15,8 @@ class MainUI(Frame):
     # main window initialize
     def __init__(self, master=None):
         super().__init__(master)
-        self.base_var = StringVar(value="lidar")
+        self.rdbvar = tk.IntVar()
+        self.rdbvar.set(0)
         self.style = Style()
         self.init_ui()
 
@@ -39,8 +41,9 @@ class MainUI(Frame):
 
         # 3行目
         self.lbl_merge_base = Label(self, text="結合の基準:", anchor="e")
-        self.rdb_lidar_on = Radiobutton(self, text="レーザー", value="lidar", variable=self.base_var)
-        self.rdb_enc_on = Radiobutton(self, text="エンコーダー", value="enc", variable=self.base_var)
+        # value: 0=lidar, 1=encoder
+        self.rdb_lidar_on = Radiobutton(self, text="レーザー", value=0, variable=self.rdbvar)
+        self.rdb_enc_on = Radiobutton(self, text="エンコーダー", value=1, variable=self.rdbvar)
         self.btn_merge = tk.Button(self, text="結　合", fg="#000", bg="#fff8d6", command=self.merge_log)
 
         # separator
@@ -60,7 +63,7 @@ class MainUI(Frame):
         self.lbl_offset = Label(self, text="オフセット >>", anchor="e")
         self.txt_offset = Entry(self, justify="right")
         self.lbl_offset_unit = Label(self, text="cm")
-        self.btn_sep = tk.Button(self, text="分　割", fg="#000", bg="#fff8d6")
+        self.btn_sep = tk.Button(self, text="分　割", fg="#000", bg="#fff8d6", command=self.sepfile)
 
         # 7行目
         self.btn_quit = tk.Button(self, text="閉じる", command=self.quit)
@@ -138,10 +141,21 @@ class MainUI(Frame):
     def merge_log(self):
         enc_log_path = self.txt_enc_path.get()
         lidar_log_path = self.txt_lidar_path.get()
+        selected_button = self.rdbvar.get()
 
         save_dir = os.path.dirname(enc_log_path)
 
-        MergeBl.merge(enc_log_path, lidar_log_path, save_dir)
+        MergeBl.merge(selected_button, enc_log_path, lidar_log_path, save_dir)
+
+    # separate target file
+    def sepfile(self):
+        target_file_path = self.txt_septarget_path.get()
+        pitch = self.txt_sep_pitch.get()
+        offset = self.txt_offset.get()
+
+        save_dir = os.path.dirname(target_file_path)
+
+        SeparateBl.seplog(target_file_path, pitch, offset, save_dir)
 
 
 def main():
