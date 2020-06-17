@@ -4,10 +4,10 @@ import sys
 import datetime
 import pandas as pd
 
-from tqdm import tqdm
+# from tqdm import tqdm
 
 
-def merge(enc_path, lidar_path, save_dir):
+def merge(selected_button, enc_path, lidar_path, save_dir):
 
     lidar_enc_df = pd.DataFrame()
 
@@ -20,16 +20,27 @@ def merge(enc_path, lidar_path, save_dir):
     print('結合開始：' + start_time.strftime('%Y-%m-%d %H:%M:%S'))
 
     print('--------------------------------------------')
-    # date列を21文字(ミリセカンド1桁)に変更
-    # enc_df['date'] = enc_df['date'].str[:21]
-    # print(enc_df.head(5))
+    # date列　21文字目(ミリセカンド1桁)
+    # date列　19文字目(セカンド)
+
+    # ラジオボタンの値が
+    # 0(レーザー)なら21文字目まで
+    # 1(エンコーダー)なら19文字目までをマッチングさせる
+    if selected_button == 0:
+        date_length = 21
+    else:
+        date_length = 19
+
+    # todo
+    # エンコーダーベース（みりセカンド）でマッチングさせる場合
+    # ピッタリ一致はありえないので、近似を取るようなロジックを追加する。
 
     # enc_dfのdate列を19文字（秒）に変更
-    enc_df['date'] = enc_df['date'].str[:19]
+    enc_df['date'] = enc_df['date'].str[:date_length]
     enc_df['Z_axis'] = enc_df['Z_axis'] * 100
 
     # lidar_dfのdate列を19文字（秒）に変更
-    lidar_df['date'] = lidar_df['date'].str[:19]
+    lidar_df['date'] = lidar_df['date'].str[:date_length]
 
     # 日付データのミリセカンドまでで重複しないもののみ出力
     # print(enc_df.drop_duplicates().info())
