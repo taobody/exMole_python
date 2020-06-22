@@ -9,7 +9,7 @@ import pandas as pd
 
 def merge(selected_button, enc_path, lidar_path, save_dir):
 
-    lidar_enc_df = pd.DataFrame()
+    # lidar_enc_df = pd.DataFrame()
 
     # pandasでcvsファイルを読み込んでデータフレームに格納する
     enc_df = pd.read_csv(enc_path, sep=',', header=None, names=['date', 'Z_axis'])
@@ -24,15 +24,15 @@ def merge(selected_button, enc_path, lidar_path, save_dir):
     # date列　19文字目(セカンド)
 
     # ラジオボタンの値が
-    # 0(レーザー)なら21文字目まで
-    # 1(エンコーダー)なら19文字目までをマッチングさせる
+    # 0(レーザー)なら19文字目まで
+    # 1(エンコーダー)なら21文字目までをマッチングさせる
     if selected_button == 0:
-        date_length = 21
-    else:
         date_length = 19
+    else:
+        date_length = 21
 
     # todo
-    # エンコーダーベース（みりセカンド）でマッチングさせる場合
+    # エンコーダーベース（ミリセカンド）でマッチングさせる場合
     # ピッタリ一致はありえないので、近似を取るようなロジックを追加する。
 
     # enc_dfのdate列を19文字（秒）に変更
@@ -46,10 +46,26 @@ def merge(selected_button, enc_path, lidar_path, save_dir):
     # print(enc_df.drop_duplicates().info())
 
     # lidar_dfとenc_dfを右外部結合
-    lidar_enc_df = pd.merge(lidar_df, enc_df, how="right", on='date')
-    # # 再度重複行を削除
+    # この時、結合の基準をレーザーならmergeを
+    # エンコーダーならmerge_asof(近似値でのマージを行う関数）を使う
+    if selected_button == 0:
+        enc_df['date'] = pd.to_datetime(enc_df['date'], format='%Y-%m-%d %H:%M:%S')
+        lidar_df['date'] = pd.to_datetime(lidar_df['date'], format='%Y-%m-%d %H:%M:%S')
+        lidar_enc_df = pd.merge(lidar_df, enc_df, how="right", on='date')
+    else:
+        # dateを文字列からdatetime型に変更して、さらにUNIX時間に変換して比較する
+        enc_df['date'] = pd.to_datetime(enc_df['date'], format='%Y-%m-%d %H:%M:%S:%f')
+        enc_df['date'] = enc_df['date'].timestamp()
+        print(enc_df.head(5))
+        lidar_df['date'] = pd.to_datetime(lidar_df['date'], format='%Y-%m-%d %H:%M:%S.%f')
+        lidar_df['date'] = lidar_df['date'].timestamp()
+        print(lidar_df.head(5))
+
+        lidar_enc_df = pd.merge_asof(lidar_df, enc_df, on='date', direction='nearest')
+
+    # 再度重複行を削除
     lidar_enc_df = lidar_enc_df.drop_duplicates()
-    # # 重複しないNaNを含む行を削除
+    # 重複しないNaNを含む行を削除
     lidar_enc_df = lidar_enc_df.dropna(axis=0, how='any')
 
     # 出力（1列目は不要なのでindexはFalseを指定）
@@ -58,4 +74,5 @@ def merge(selected_button, enc_path, lidar_path, save_dir):
     print("出力ファイル名：" + make_file_name)
     print("データ数（行）：" + str(len(lidar_enc_df)))
     print('--------------------------------------------')
+    lidar_enc_df.to_csv(make_file_name, index=False)
     print('結合完了：' + end_time)
