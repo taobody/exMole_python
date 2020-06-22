@@ -141,7 +141,7 @@ class MainUI(Frame):
     def merge_log(self):
         enc_log_path = self.txt_enc_path.get()
         lidar_log_path = self.txt_lidar_path.get()
-        selected_button = self.rdbvar.get()
+        selected_button = int(self.rdbvar.get())
 
         save_dir = os.path.dirname(enc_log_path)
 
