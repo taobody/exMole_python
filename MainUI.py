@@ -18,16 +18,12 @@ class MainUI(Frame):
         self.rdbvar = tk.IntVar()
         self.rdbvar.set(0)
         self.style = Style()
-        self.init_ui()
-
-    def init_ui(self):
-
         self.style.theme_use("default")
-
+        # self.
         self.master.title("Merge Data")
         self.master.geometry("800x350+300+300")
         self.master.resizable(width=0, height=0)
-        # self.master.iconbitmap('merge.ico')
+        # self.master.iconbitmap('./merge.ico')
 
         # 1行目
         self.lbl_enc_path = Label(self, text="エンコーダーログ >>", anchor="e")
