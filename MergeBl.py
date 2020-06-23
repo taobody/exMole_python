@@ -55,13 +55,15 @@ def merge(selected_button, enc_path, lidar_path, save_dir):
     else:
         # dateを文字列からdatetime型に変更して、さらにUNIX時間に変換して比較する
         enc_df['date'] = pd.to_datetime(enc_df['date'], format='%Y-%m-%d %H:%M:%S:%f')
-        enc_df['date'] = enc_df['date'].timestamp()
+        enc_df['date'] = enc_df['date'].view('int64')
         print(enc_df.head(5))
         lidar_df['date'] = pd.to_datetime(lidar_df['date'], format='%Y-%m-%d %H:%M:%S.%f')
-        lidar_df['date'] = lidar_df['date'].timestamp()
+        lidar_df['date'] = lidar_df['date'].view('int64')
         print(lidar_df.head(5))
 
-        lidar_enc_df = pd.merge_asof(lidar_df, enc_df, on='date', direction='nearest')
+        lidar_enc_df = pd.merge_asof(lidar_df, enc_df, on='date')
+        # UNIX時間を再度datetimeに変換
+        lidar_enc_df['date'] = pd.to_datetime(lidar_enc_df['date'], format='%Y-%m-%d %H:%M:%S.%f')
 
     # 再度重複行を削除
     lidar_enc_df = lidar_enc_df.drop_duplicates()
