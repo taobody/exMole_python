@@ -4,14 +4,16 @@ import datetime
 import pandas as pd
 
 
-def seplog(path, pitch, offset, save_dir):
+def seplog(path, pitch, tolerance, offset, save_dir):
     print('ファイル名：', path)
     print('分割ピッチ：', pitch, 'cm')
+    print('許容範囲：', tolerance, 'cm')
     print('オフセット：', offset, 'cm')
     print('保存先：', save_dir)
 
-    # ピッチ、オフセット値を㎜に換算
+    # ピッチ、許容範囲、オフセット値を㎜に換算
     pitch = float(pitch) * 10
+    tolerance = float(tolerance) * 10
     offset = float(offset) * 10
 
     # targetファイルをdataframeに読み込み
@@ -30,8 +32,8 @@ def seplog(path, pitch, offset, save_dir):
     print('--------------------------------------------')
 
     while True:
-        min_pitch = (pitch * cnt) + offset - 50
-        max_pitch = (pitch * cnt) + offset + 50
+        min_pitch = (pitch * cnt) + offset - tolerance
+        max_pitch = (pitch * cnt) + offset + tolerance
         separated_df = target_df[(target_df['Z_axis'] > init_dist + min_pitch)
                                  & (target_df['Z_axis'] < init_dist + max_pitch)]
         if not separated_df.empty:
