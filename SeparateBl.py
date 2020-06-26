@@ -24,7 +24,7 @@ def seplog(path, pitch, tolerance, offset, save_dir):
 
     # Z_axisが、初期値にピッチを足した値と近似のものだけ取り出して
     # データがなくなるまで、ピッチごとのデータを取り出してファイルに書き出し
-    # ここで、近似は±50㎜とする
+    # ここで、近似はtoleranceとする
     cnt = 1
     start_time = datetime.datetime.now()
     # print(len(target_df))
