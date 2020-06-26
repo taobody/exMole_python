@@ -21,7 +21,7 @@ class MainUI(Frame):
         self.style.theme_use("default")
         # self.
         self.master.title("Merge Data")
-        self.master.geometry("800x350+300+300")
+        self.master.geometry("800x300+300+300")
         self.master.resizable(width=0, height=0)
         # self.master.iconbitmap('./merge.ico')
 
@@ -54,6 +54,10 @@ class MainUI(Frame):
         self.lbl_sep_pitch = Label(self, text="分割ピッチ >>", anchor="e")
         self.txt_sep_pitch = Entry(self, justify="right")
         self.lbl_sep_unit = Label(self, text="cm")
+
+        self.lbl_pitch_tolerance = Label(self, text="許容範囲 >>", anchor="e")
+        self.txt_pitch_tolerance = Entry(self, justify="right")
+        self.lbl_tolerance_unit = Label(self, text="cm")
 
         # 6行目
         self.lbl_offset = Label(self, text="オフセット >>", anchor="e")
@@ -89,13 +93,19 @@ class MainUI(Frame):
         self.txt_sep_pitch.insert(tk.END, "0")
         self.lbl_sep_unit.place(x=260, y=210, width=35, height=30)
 
+        self.lbl_pitch_tolerance.place(x=305, y=210, width=140, height=30)
+        self.txt_pitch_tolerance.place(x=455, y=210, width=90, height=30)
+        self.txt_pitch_tolerance.insert(tk.END, "5")
+        self.lbl_tolerance_unit.place(x=550, y=210, width=35, height=30)
+
         self.lbl_offset.place(x=15, y=260, width=140, height=30)
         self.txt_offset.place(x=165, y=260, width=90, height=30)
         self.txt_offset.insert(tk.END, "0")
         self.lbl_offset_unit.place(x=260, y=260, width=35, height=30)
-        self.btn_sep.place(x=665, y=260, width=120, height=30)
 
-        self.btn_quit.place(x=665, y=310, width=120, height=30)
+        self.btn_sep.place(x=665, y=210, width=120, height=30)
+
+        self.btn_quit.place(x=665, y=260, width=120, height=30)
 
         self.pack(fill=BOTH, expand=1)
 
@@ -148,10 +158,11 @@ class MainUI(Frame):
         target_file_path = self.txt_septarget_path.get()
         pitch = self.txt_sep_pitch.get()
         offset = self.txt_offset.get()
+        tolerance = self.txt_pitch_tolerance.get()
 
         save_dir = os.path.dirname(target_file_path)
 
-        SeparateBl.seplog(target_file_path, pitch, offset, save_dir)
+        SeparateBl.seplog(target_file_path, pitch, tolerance, offset, save_dir)
 
 
 def main():
